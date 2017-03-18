@@ -23,15 +23,21 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.util.BaseAsyncTask;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
         StockAdapter.StockAdapterOnClickHandler {
 
+    private static String TAG = MainActivity.class.getSimpleName();
     private static final int STOCK_LOADER = 0;
     private static final String STOCK_DIALOG_FRAGMENT = "STOCK_DIALOG_FRAGMENT";
 
@@ -126,10 +132,57 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
-
-            PrefUtils.addStock(this, symbol);
-            QuoteSyncJob.syncImmediately(this);
+            BaseAsyncTask<String,Void,Boolean> stockExitsTask = new BaseAsyncTask<>();
+            stockExitsTask.setTask(getStockExistsTask(symbol));
+            stockExitsTask.setCallback(getCallbackForStockExistsTask(symbol));
+            stockExitsTask.execute();
         }
+    }
+
+    private BaseAsyncTask.ICallbackTask<Boolean> getCallbackForStockExistsTask(final String stockSymbol){
+        return new BaseAsyncTask.ICallbackTask<Boolean>() {
+            @Override
+            public void onStart() {}
+
+            @Override
+            public void onSuccess(Boolean exists) {
+                if(exists) {
+                    PrefUtils.addStock(MainActivity.this, stockSymbol);
+                }else{
+                    String message = getString(R.string.error_stock_not_exists, stockSymbol);
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+                QuoteSyncJob.syncImmediately(MainActivity.this);
+            }
+
+            @Override
+            public void onError() {
+                String message = getString(R.string.error_try_again);
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+    private BaseAsyncTask.ITask<Boolean> getStockExistsTask(final String stockSymbol){
+        return new BaseAsyncTask.ITask<Boolean>() {
+            @Override
+            public Boolean task() {
+                try {
+                    Timber.d(TAG, "getStock: " + stockSymbol);
+                    Stock stock = YahooFinance.get(stockSymbol);
+                    return stock.getQuote().getPrice() != null;
+                }catch (IOException e){
+                    e.printStackTrace();
+                    return false;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    //When stock name is for example "."
+                    //we get arrayindexoutofboundsexception
+                    //from yahoo api.
+                    Timber.e(TAG, "YahooAPI parsing errors: "+ e.getMessage() );
+                    return false;
+                }
+            }
+        };
     }
 
     @Override
