@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int STOCK_LOADER = 0;
     private static final String STOCK_DIALOG_FRAGMENT = "STOCK_DIALOG_FRAGMENT";
 
+    public static final String STOCK ="STOCK";
+
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.recycler_view)
     RecyclerView mStockRecyclerView;
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
         Intent intent = new Intent(this, StockDetailsActivity.class);
-        intent.putExtra("1",symbol);
+        intent.putExtra(STOCK, symbol);
         this.startActivity(intent);
     }
 
