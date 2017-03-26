@@ -6,9 +6,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.google.common.collect.ImmutableList;
-import com.udacity.stockhawk.R;
-
-import timber.log.Timber;
 
 public final class Contract {
 

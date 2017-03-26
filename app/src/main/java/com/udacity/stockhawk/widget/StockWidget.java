@@ -10,10 +10,7 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.sync.QuoteIntentService;
 import com.udacity.stockhawk.ui.StockDetailsActivity;
-
-import butterknife.ButterKnife;
 
 /**
  * Implementation of App Widget functionality.

@@ -20,7 +20,7 @@ import timber.log.Timber;
 import static com.udacity.stockhawk.ui.MainActivity.STOCK;
 
 /**
- * Created by Waszak on 26.03.2017.
+ * Provider for ListView in widget
  */
 
 class StockHawkWidgetListProvider implements RemoteViewsService.RemoteViewsFactory {

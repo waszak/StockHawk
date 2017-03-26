@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.widget.RemoteViewsService;
 
 /**
- * Created by Waszak on 26.03.2017.
+ * Service for remote views
  */
 
 public class StockHawkWidgetService extends RemoteViewsService {
