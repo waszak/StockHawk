@@ -3,6 +3,7 @@ package com.udacity.stockhawk.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -10,10 +11,13 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.data.StockRow;
+import com.udacity.stockhawk.ui.StockDetailsActivity;
 
 import java.util.ArrayList;
 
 import timber.log.Timber;
+
+import static com.udacity.stockhawk.ui.MainActivity.STOCK;
 
 /**
  * Created by Waszak on 26.03.2017.
@@ -73,6 +77,8 @@ class StockHawkWidgetListProvider implements RemoteViewsService.RemoteViewsFacto
         RemoteViews remoteViews =  new RemoteViews(mContext.getPackageName(),
                 R.layout.list_item_quote);
         StockRow stockRow = mStockRows.get(position);
+        Intent intent = getIntent(stockRow.getSymbol());
+        remoteViews.setOnClickFillInIntent(R.id.list_item, intent);
 
         remoteViews.setTextViewText(R.id.symbol, stockRow.getSymbol());
         remoteViews.setTextViewText(R.id.price, stockRow.getPrice());
@@ -91,6 +97,13 @@ class StockHawkWidgetListProvider implements RemoteViewsService.RemoteViewsFacto
         remoteViews.setTextViewText(R.id.change, change);
 
         return remoteViews;
+    }
+
+    @NonNull
+    private Intent getIntent(String symbol) {
+        Intent intent = new Intent(mContext, StockDetailsActivity.class);
+        intent.putExtra(STOCK, symbol);
+        return intent;
     }
 
     private boolean isDollarWithPlusMode() {
