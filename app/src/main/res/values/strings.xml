@@ -38,5 +38,7 @@
     <string name="stock_example_name">Google</string>
     <string name="appwidget_text">Stock Hawk</string>
     <string name="add_widget">Add widget</string>
+    <string name="no_stocks_to_show">No stocks to show</string>
+    <string name="error_msg">Error message</string>
 
 </resources>

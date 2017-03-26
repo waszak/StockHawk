@@ -19,7 +19,7 @@ import timber.log.Timber;
  * Created by Waszak on 26.03.2017.
  */
 
-public class StockHawkWidgetListProvider implements RemoteViewsService.RemoteViewsFactory {
+class StockHawkWidgetListProvider implements RemoteViewsService.RemoteViewsFactory {
 
     private ArrayList<StockRow> mStockRows;
     private Context mContext;
@@ -41,13 +41,11 @@ public class StockHawkWidgetListProvider implements RemoteViewsService.RemoteVie
     public void onDataSetChanged() {
         Timber.d("Stock list data changed");
         Cursor cursor = getCursor();
-
+        mStockRows.clear();
         if (!cursor.moveToFirst()) {
-            Timber.d("moveToFirst failed");
             cursor.close();
             return;
         }
-        mStockRows.clear();
         mStockRows.add(Contract.Quote.mapToStockRow(cursor));
         while(cursor.moveToNext()){
             mStockRows.add(Contract.Quote.mapToStockRow(cursor));
@@ -66,7 +64,7 @@ public class StockHawkWidgetListProvider implements RemoteViewsService.RemoteVie
 
     /**
      *
-     * @param position of view we want in adapter
+     * @param position of view we want to get
      * @return view at position
      */
     @Override
@@ -125,7 +123,7 @@ public class StockHawkWidgetListProvider implements RemoteViewsService.RemoteVie
 
     /**
      *
-     * @param position
+     * @param position in adapter
      * @return position of row in data set
      */
     @Override

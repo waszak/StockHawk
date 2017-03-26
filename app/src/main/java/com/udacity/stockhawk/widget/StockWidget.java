@@ -38,7 +38,7 @@ public class StockWidget extends AppWidgetProvider{
         // There may be multiple widgets active, so update all of them
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.stock_widget);
         views.setRemoteAdapter(R.id.widget_stock_list, getServiceIntent(context, appWidgetIds));
-        //views.setEmptyView(R.id.widget_stock_list, R.id.wi);
+        views.setEmptyView(R.id.widget_stock_list, R.id.no_stock);
 
         //views.setOnClickPendingIntent(R.id.widget_stock_list, getPendingIntent(context));
 

@@ -27,5 +27,17 @@
         android:id="@+id/widget_stock_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/no_stock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#09C"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/no_stocks_to_show"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"/>
 
 </LinearLayout>

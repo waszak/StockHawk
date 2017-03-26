@@ -1,5 +1,7 @@
 package com.udacity.stockhawk.data;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.widget.StockWidget;
 
 
 public class StockProvider extends ContentProvider {
@@ -144,6 +149,11 @@ public class StockProvider extends ContentProvider {
             Context context = getContext();
             if (context != null){
                 context.getContentResolver().notifyChange(uri, null);
+                //notify widget about delete
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, StockWidget.class));
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_stock_list);
+
             }
         }
 
