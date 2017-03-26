@@ -20,11 +20,6 @@ import butterknife.ButterKnife;
  */
 public class StockWidget extends AppWidgetProvider{
 
-    private static PendingIntent getPendingIntent(Context context) {
-        Intent refreshIntent = new Intent(context, QuoteIntentService.class);
-        return PendingIntent.getService(context, 0, refreshIntent, 0);
-    }
-
     private static PendingIntent getDetailsPendingIntent(Context context) {
         Intent stockDetailsIntent = new Intent(context, StockDetailsActivity.class);
         return PendingIntent.getActivity(context, 0, stockDetailsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -47,8 +42,6 @@ public class StockWidget extends AppWidgetProvider{
         views.setEmptyView(R.id.widget_stock_list, R.id.no_stock);
 
         views.setPendingIntentTemplate(R.id.widget_stock_list, getDetailsPendingIntent(context));
-
-        //views.setOnClickPendingIntent(R.id.widget_stock_list, getPendingIntent(context));
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetIds, views);
