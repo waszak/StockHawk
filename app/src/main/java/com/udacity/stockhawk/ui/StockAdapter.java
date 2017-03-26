@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.data.StockRow;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -19,18 +20,11 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import yahoofinance.Stock;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
-    private static final String POSITIVE_DOLLAR_PREFIX = "+$";
-    private static final String POSITIVE = "+";
-    private static final int MIN_FRACTION_DIGITS = 2;
-    private static final int MAX_FRACTION_DIGITS = 2;
-
     private final Context mContext;
-    private final DecimalFormat mDollarFormatWithPlus;
-    private final DecimalFormat mDollarFormat;
-    private final DecimalFormat mPercentageFormat;
     private Cursor mCursor;
     private final StockAdapterOnClickHandler mClickHandler;
 
@@ -38,13 +32,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     StockAdapter(Context context, StockAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
-        mDollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
-        mDollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
-        mDollarFormatWithPlus.setPositivePrefix(POSITIVE_DOLLAR_PREFIX);
-        mPercentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
-        mPercentageFormat.setMaximumFractionDigits(MAX_FRACTION_DIGITS);
-        mPercentageFormat.setMinimumFractionDigits(MIN_FRACTION_DIGITS);
-        mPercentageFormat.setPositivePrefix(POSITIVE);
+
     }
 
     void setCursor(Cursor cursor) {
@@ -67,29 +55,23 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
     @Override
     public void onBindViewHolder(StockViewHolder holder, int position) {
-
         mCursor.moveToPosition(position);
+        StockRow stockRow = Contract.Quote.mapToStockRow(mCursor);
 
-        holder.mSymbol.setText(mCursor.getString(Contract.Quote.POSITION_SYMBOL));
-        holder.mPrice.setText(mDollarFormat.format(mCursor.getFloat(Contract.Quote.POSITION_PRICE)));
+        holder.mSymbol.setText(stockRow.getSymbol());
+        holder.mPrice.setText(stockRow.getPrice());
 
-        float rawAbsoluteChange = mCursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
-        float percentageChange = mCursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
-
-        if (rawAbsoluteChange > 0) {
+        if (stockRow.isPositiveChange()) {
             holder.mChange.setBackgroundResource(R.drawable.percent_change_pill_green);
         } else {
             holder.mChange.setBackgroundResource(R.drawable.percent_change_pill_red);
         }
 
-        String change = mDollarFormatWithPlus.format(rawAbsoluteChange);
-        String percentage = mPercentageFormat.format(percentageChange / 100);
-
         if (PrefUtils.getDisplayMode(mContext)
                 .equals(mContext.getString(R.string.pref_display_mode_absolute_key))) {
-            holder.mChange.setText(change);
+            holder.mChange.setText(stockRow.getRawAbsoluteChange());
         } else {
-            holder.mChange.setText(percentage);
+            holder.mChange.setText(stockRow.getPercentageChange());
         }
 
 

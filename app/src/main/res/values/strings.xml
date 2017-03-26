@@ -36,5 +36,7 @@
     <string name="toast_no_connectivity">Will refresh when network available.</string>
     <string name="stock_details">Stock details</string>
     <string name="stock_example_name">Google</string>
+    <string name="appwidget_text">Stock Hawk</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

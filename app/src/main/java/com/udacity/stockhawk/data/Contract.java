@@ -1,10 +1,14 @@
 package com.udacity.stockhawk.data;
 
 
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.google.common.collect.ImmutableList;
+import com.udacity.stockhawk.R;
+
+import timber.log.Timber;
 
 public final class Contract {
 
@@ -49,7 +53,14 @@ public final class Contract {
             return queryUri.getLastPathSegment();
         }
 
+        public static StockRow mapToStockRow(Cursor cursor){
+            String symbol = cursor.getString(Contract.Quote.POSITION_SYMBOL);
+            float price = cursor.getFloat(Contract.Quote.POSITION_PRICE);
+            float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
+            float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
+            return new StockRow(symbol, price, rawAbsoluteChange, percentageChange);
+        }
     }
 
 }

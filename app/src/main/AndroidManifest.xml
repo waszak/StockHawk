@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.Manifest.permission.RECEIVE_BOOT_COMPLETED"/>
-
     <application
         android:name=".StockHawkApp"
         android:allowBackup="false"
@@ -29,21 +28,33 @@
         <provider
             android:name=".data.StockProvider"
             android:authorities="com.udacity.stockhawk"
-            android:exported="false"/>
+            android:exported="true"/>
 
         <service
             android:name=".sync.QuoteJobService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name=".widget.StockHawkWidgetService"
+                 android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
-        <activity android:name=".ui.StockDetailsActivity"
-            android:parentActivityName=".ui.MainActivity"
-            android:label="@string/stock_details">
+        <activity
+            android:name=".ui.StockDetailsActivity"
+            android:label="@string/stock_details"
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity"/>
         </activity>
+
+        <receiver android:name=".widget.StockWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_widget_info"/>
+        </receiver>
     </application>
 
 </manifest>
